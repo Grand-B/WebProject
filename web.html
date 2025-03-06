@@ -20,6 +20,19 @@
 
 
     </form>
-    <script src="main.js"></script>
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var username = document.querySelector('#username').value;
+            var password = document.querySelector('#password').value;
+            
+            if(username === 'admin' && password === 'admin') {
+                window.location.href = 'loggedIn.html';
+            } else {
+                document.querySelector('#msg').textContent = 'Invalid credentials';
+            }
+        });
+    </script> 
+</script>
 </body>
 </html>
