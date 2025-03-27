@@ -13,16 +13,54 @@
     <p id="msg">Please login to access the page</p>
     <form action="/login" method="POST">
         <label for="username">Username:</label>
-        <input type="text" name="username" id="username" required>
-        <label for="password">Password:</label>
-        <input type="password" name="password" id="password" required>
-        <button type="submit">Login</button>
+        <input
+            type="text"
+            name="username"
+            id="username"
+            required
+            maxlength="32"
+            pattern="[a-zA-Z0-9_@.-]{3,32}"
+            title="3-32 characters. Only letters, numbers, @ . - and _ allowed."
+        >
     
-
+        <label for="password">Password:</label>
+        <input
+            type="password"
+            name="password"
+            id="password"
+            required
+            maxlength="32"
+            pattern="[a-zA-Z0-9_@.-]{3,32}"
+            title="3-32 characters. Only letters, numbers, @ . - and _ allowed."
+        >
+    
+        <button type="submit">Login</button>
     </form>
+    
     <h2>Register</h2>
     <p id="msg">Don't have an account? Register here!</p>
     <a href="/register">Register</a>
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const username = document.querySelector('#username').value;
+            const password = document.querySelector('#password').value;
     
+            //Regex patterns
+            const safePattern = /^[a-zA-Z0-9_@.-]{3,32}$/;
+    
+            if (!safePattern.test(username) || !safePattern.test(password)) {
+                e.preventDefault();
+                alert("Invalid characters in username or password. Use only letters, numbers, @ . - and _ (3–32 chars).");
+                return;
+            }
+    
+            //Basic XSS prevention
+            if (username.includes("<") || username.includes(">") || password.includes("<") || password.includes(">")) {
+                e.preventDefault();
+                alert("Potential XSS detected: < or > characters are not allowed.");
+                return;
+            }
+        });
+    </script>
 </body>
 </html>

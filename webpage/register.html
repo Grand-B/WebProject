@@ -11,6 +11,29 @@
         <input type="text" name="username" placeholder="Username" required>
         <input type="password" name="password" placeholder="Password" required>
         <button type="submit">Register</button>
+
+        <script>
+            document.querySelector('form').addEventListener('submit', function(e) {
+                const username = document.querySelector('#username').value;
+                const password = document.querySelector('#password').value;
+        
+                //Regex patterns
+                const safePattern = /^[a-zA-Z0-9_@.-]{3,32}$/;
+        
+                if (!safePattern.test(username) || !safePattern.test(password)) {
+                    e.preventDefault();
+                    alert("Invalid characters in username or password. Use only letters, numbers, @ . - and _ (3–32 chars).");
+                    return;
+                }
+        
+                //Basic XSS prevention
+                if (username.includes("<") || username.includes(">") || password.includes("<") || password.includes(">")) {
+                    e.preventDefault();
+                    alert("Potential XSS detected: < or > characters are not allowed.");
+                    return;
+                }
+            });
+        </script>
     </form>
     <a href="/login">Already have an account? Login</a>
 </body>
