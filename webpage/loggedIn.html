@@ -10,7 +10,16 @@
 <body>
     <h1>Logged In Page</h1>
     <p id="msg">You are logged in</p>
+    
     <button onclick="logout()">Logout</button>
+
+    <hr>
+    <h2>Submit Feedback</h2>
+    <form action="/submit-feedback" method="POST">
+        <textarea name="feedback" rows="5" cols="50" placeholder="Your feedback..." required></textarea><br>
+        <button type="submit">Submit Feedback</button>
+    </form>
+
     <script>
         function logout() {
             window.location.href = '/logout';

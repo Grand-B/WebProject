@@ -19,8 +19,8 @@
             id="username"
             required
             maxlength="32"
-            pattern="[a-zA-Z0-9_@.-]{3,32}"
-            title="3-32 characters. Only letters, numbers, @ . - and _ allowed."
+            pattern="[a-zA-Z0-9_@$.-]{3,32}"
+            title="3-32 characters. Only letters, numbers, @ . - $ and _ allowed."
         >
     
         <label for="password">Password:</label>
@@ -46,11 +46,11 @@
             const password = document.querySelector('#password').value;
     
             //Regex patterns
-            const safePattern = /^[a-zA-Z0-9_@.-]{3,32}$/;
+            const safePattern = /^[a-zA-Z0-9_@$.-]{3,32}$/;
     
-            if (!safePattern.test(username) || !safePattern.test(password)) {
+            if (!safePattern.test(password)) {
                 e.preventDefault();
-                alert("Invalid characters in username or password. Use only letters, numbers, @ . - and _ (3–32 chars).");
+                alert("Invalid characters in username or password. Use only letters, numbers, @ . - $ and _ (3–32 chars).");
                 return;
             }
     

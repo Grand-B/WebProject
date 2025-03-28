@@ -1,11 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
-from database import db, bcrypt, login_manager, User
+from database import db, bcrypt, login_manager, User, Privilege
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import re
-
 
 app = Flask(__name__, template_folder="webpage")
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://grandadmin:Rb1of2jp3jd1!123@localhost:9308/webdb'
@@ -19,18 +18,18 @@ login_manager.init_app(app)
 limiter = Limiter(
     get_remote_address,
     app=app,
-    default_limits=["100 per day", "20 per hour"] #bans you after these limits lol
+    default_limits=["200 per day", "20 per minutes"] #bans you after these limits lol
 )
 
 def is_valid_input(value):
-    return re.fullmatch(r"[a-zA-Z0-9_@.-]{3,32}", value)
+    return re.fullmatch(r"[a-zA-Z0-9_@$.-]{3,32}", value)
 
 @app.route("/")
 def home():
     return render_template("web.html")
 
 @app.route("/register", methods=["GET", "POST"])
-@limiter.limit("10 per hour") #Limit the registration attempts to 10 per hour
+@limiter.limit("50 per minutes") #Limit the registration attempts to 10 per hour
 def register():
     if request.method == "POST":
         username = request.form["username"]
@@ -73,7 +72,17 @@ def register():
             return redirect(url_for("home"))
 
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-        new_user = User(username=username, password=hashed_password)
+        
+        default_privilege = Privilege.query.filter_by(name='user').first()
+        if not default_privilege:
+            flash("Default user role not found in the database.", "danger")
+            return redirect(url_for("register"))
+
+        new_user = User(
+            username=username,
+            password=hashed_password,
+            privilege=default_privilege  
+        )
         db.session.add(new_user)
         db.session.commit()
 
@@ -83,7 +92,7 @@ def register():
     return render_template("register.html")
 
 @app.route("/login", methods=["POST"])
-@limiter.limit("5 per minute") #Limit the login attempts to 5 per minute
+@limiter.limit("50 per minute") #
 def login():
     username = request.form["username"]
     password = request.form["password"]
@@ -100,6 +109,12 @@ def login():
     else:
         flash("Invalid username or password", "danger")
         return redirect(url_for("home"))
+    
+
+
+@app.route("/backbutton")
+def back():
+    return render_template("web.html")
 
 @app.route("/dashboard")
 @login_required
@@ -130,6 +145,20 @@ def change_password():
         return redirect(url_for("change_password"))
 
     return render_template("changePassword.html")
+
+@app.route("/submit-feedback", methods=["POST"])
+@login_required
+def submit_feedback():
+    feedback_text = request.form.get("feedback")
+
+    if not feedback_text or len(feedback_text.strip()) < 5:
+        flash("Feedback is too short or empty.", "warning")
+        return redirect(url_for("dashboard"))
+
+    print(f"Feedback from {current_user.username}: {feedback_text}")
+
+    flash("Thanks for your feedback!", "success")
+    return redirect(url_for("dashboard"))
 
 if __name__ == "__main__":
     app.run(debug=True)
