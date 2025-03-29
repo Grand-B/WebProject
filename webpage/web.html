@@ -30,7 +30,7 @@
             id="username"
             required
             maxlength="32"
-            pattern="[a-zA-Z0-9_@$.-]{3,32}"
+            pattern="[a-zA-Z0-9_@$!.-]{3,32}"
             title="3-32 characters. Only letters, numbers, @ . - $ ! and _ allowed."
         >
     
@@ -39,10 +39,9 @@
             type="password"
             name="password"
             id="password"
-            required
-            maxlength="32"
-            pattern="[a-zA-Z0-9_@.-]{3,32}"
-            title="3-32 characters. Only letters, numbers, @ . - ! and _ allowed."
+            required maxlength="32"
+            pattern="[a-zA-Z0-9_@$!.-]{8,32}"
+            title="8-32 characters. Only letters, numbers, @ . - ! and _ allowed."
         >
     
         <button type="submit">Login</button>
@@ -58,10 +57,10 @@
     
             //Regex patterns
             const safePattern = /^[a-zA-Z0-9_@$!.-]{3,32}$/;
-    
+            
             if (!safePattern.test(password)) {
                 e.preventDefault();
-                alert("Invalid characters in username or password. Use only letters, numbers, @ . - $ ! and _ (3–32 chars).");
+                alert("Invalid characters in username or password. Use only letters, numbers, @ . - $ ! and _ (8–32 chars).");
                 return;
             }
     

@@ -10,13 +10,23 @@
 <body>
     <h2>Register</h2>
     <form action="/register" method="POST">
-        <input type="text" name="username" id="username" placeholder="Username" required
-        maxlength="32" pattern="[a-zA-Z0-9_@$!.-]{3,32}"
-        title="3–32 characters. Letters, numbers, @ . - ! and _ allowed.">
+        <label for="username">Username:</label>
+        <input
+        type="text"
+        name="username"
+        id="username"
+        required maxlength="32"
+        pattern="[a-zA-Z0-9_@$!.-]{3,32}"
+        title="3-32 characters. Only letters, numbers, @ . - $ ! and _ allowed.">
 
-        <input type="password" name="password" placeholder="Password" required
-        pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!$@_.]).{8,}"
-        title="Must be 8+ chars, include upper, lower, digit, and special (! $ @ _ .)">
+        <label for="password">Password:</label>
+        <input
+        type="password"
+        name="password"
+        id="password"
+        required maxlength="32"
+        pattern="[a-zA-Z0-9_@$!.-]{8,32}"
+        title="8-32 characters. Only letters, numbers, @ . - ! and _ allowed.">
 
         <button type="submit">Register</button>
 
@@ -28,16 +38,21 @@
                 //Regex patterns
                 const safePattern = /^[a-zA-Z0-9_!$@.-]{3,32}$/;
         
-                if (!safePattern.test(username) || !safePattern.test(password)) {
+                if (!safePattern.test(username)) {
                     e.preventDefault();
-                    alert("Invalid characters in username or password. Use only letters, numbers, @ . - ! and _ (3–32 chars).");
+                    alert("Invalid characters in username. Use only letters, numbers, @ . - ! and _ (3–32 chars).");
+                    return;
+                }
+                if (!safePattern.test(password)) {
+                    e.preventDefault();
+                    alert("Invalid characters in password. Use only letters, numbers, @ . - ! and _ (8–32 chars).");
                     return;
                 }
         
                 //Basic XSS prevention
                 if (username.includes("<") || username.includes(">") || password.includes("<") || password.includes(">")) {
                     e.preventDefault();
-                    alert("Potential XSS detected: < or > characters are not allowed.");
+                    alert("Potential Cross Site Scripting detected: < or > characters are not allowed.");
                     return;
                 }
             });

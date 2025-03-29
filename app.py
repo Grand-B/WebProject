@@ -1,29 +1,32 @@
+import re
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-
-from database import db, bcrypt, login_manager, User, Privilege, Feedback
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-import re
+from database import db, bcrypt, login_manager, User, Privilege, Feedback
 
 app = Flask(__name__, template_folder="webpage")
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://grandadmin:Rb1of2jp3jd1!123@localhost:9308/webdb'
 app.config['SECRET_KEY'] = 'GRANDFANTASIA!123'
 
-# Initialize extensions
+#Initializing the database and bcrypt
 db.init_app(app)
 bcrypt.init_app(app)
 login_manager.init_app(app)
 
+#Rate limiting the amount of requests to the server
+#Brute Force Prevention
 limiter = Limiter(
     get_remote_address,
     app=app,
-    default_limits=["200 per day", "20 per minutes"]
+    default_limits=["200 per day", "20 per minutes"] 
 )
 
+#Input authentication
 def is_valid_input(value):
     return re.fullmatch(r"[a-zA-Z0-9_@$!.-]{3,32}", value)
 
+#Password strength check
 def is_strong_password(password):
     return (
         len(password) >= 8 and
@@ -33,10 +36,12 @@ def is_strong_password(password):
         re.search("[!$@_.]", password)
     )
 
+#Default home page
 @app.route("/")
 def home():
     return render_template("web.html")
 
+#register page
 @app.route("/register", methods=["GET", "POST"])
 @limiter.limit("50 per minutes")
 def register():
@@ -76,7 +81,9 @@ def register():
 
     return render_template("register.html")
 
+#login function itself
 @app.route("/login", methods=["POST"])
+#rate limiting the amount of times the user can login
 @limiter.limit("50 per minute")
 def login():
     username = request.form["username"]
@@ -95,15 +102,18 @@ def login():
         flash("Invalid username or password", "danger")
         return redirect(url_for("home"))
 
+#back to previous page button
 @app.route("/backbutton")
 def back():
     return render_template("web.html")
 
+#home page after logging in 
 @app.route("/dashboard")
 @login_required
 def dashboard():
     return render_template("loggedIn.html", username=current_user.username)
 
+#logout function, leads to home page
 @app.route("/logout")
 @login_required
 def logout():
@@ -111,6 +121,7 @@ def logout():
     flash("You have logged out.", "info")
     return redirect(url_for("home"))
 
+#Change password page
 @app.route("/change-password", methods=["GET", "POST"])
 @login_required
 def change_password():
@@ -119,11 +130,11 @@ def change_password():
         new = request.form["newPassword"]
 
         if not is_valid_input(current) or not is_valid_input(new):
-            flash("Invalid characters in password.", "danger")
+            flash("Invalid characters in password, try again.", "danger")
             return redirect(url_for("change_password"))
 
         if not bcrypt.check_password_hash(current_user.password, current):
-            flash("Incorrect current password.", "danger")
+            flash("Current password incorrect", "danger")
             return redirect(url_for("change_password"))
 
         if not is_strong_password(new):
@@ -133,11 +144,12 @@ def change_password():
         new_hashed = bcrypt.generate_password_hash(new).decode("utf-8")
         current_user.password = new_hashed
         db.session.commit()
-        flash("Password updated successfully.", "success")
+        flash("Password updated successfully!", "success")
         return redirect(url_for("change_password"))
 
     return render_template("changePassword.html")
 
+#feedback input box
 @app.route("/submit-feedback", methods=["POST"])
 @login_required
 def submit_feedback():
