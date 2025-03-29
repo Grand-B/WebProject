@@ -16,7 +16,9 @@
     <hr>
     <h2>Submit Feedback</h2>
     <form action="/submit-feedback" method="POST">
-        <textarea name="feedback" rows="5" cols="50" placeholder="Your feedback..." required></textarea><br>
+        <textarea name="feedback" rows="5" cols="50" placeholder="Your feedback..." required
+              maxlength="1000"
+              oninput="this.value = this.value.replace(/[<>]/g, '');"></textarea><br>
         <button type="submit">Submit Feedback</button>
     </form>
 

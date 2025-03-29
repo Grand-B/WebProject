@@ -1,14 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Web Page</title>
-<link rel="stylesheet" href="main.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Web Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+
 </head>
 <!-- body content goes here-->
 <body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
     <h1>Login Page</h1>
     <p id="msg">Please login to access the page</p>
     <form action="/login" method="POST">
@@ -20,7 +31,7 @@
             required
             maxlength="32"
             pattern="[a-zA-Z0-9_@$.-]{3,32}"
-            title="3-32 characters. Only letters, numbers, @ . - $ and _ allowed."
+            title="3-32 characters. Only letters, numbers, @ . - $ ! and _ allowed."
         >
     
         <label for="password">Password:</label>
@@ -31,7 +42,7 @@
             required
             maxlength="32"
             pattern="[a-zA-Z0-9_@.-]{3,32}"
-            title="3-32 characters. Only letters, numbers, @ . - and _ allowed."
+            title="3-32 characters. Only letters, numbers, @ . - ! and _ allowed."
         >
     
         <button type="submit">Login</button>
@@ -46,11 +57,11 @@
             const password = document.querySelector('#password').value;
     
             //Regex patterns
-            const safePattern = /^[a-zA-Z0-9_@$.-]{3,32}$/;
+            const safePattern = /^[a-zA-Z0-9_@$!.-]{3,32}$/;
     
             if (!safePattern.test(password)) {
                 e.preventDefault();
-                alert("Invalid characters in username or password. Use only letters, numbers, @ . - $ and _ (3–32 chars).");
+                alert("Invalid characters in username or password. Use only letters, numbers, @ . - $ ! and _ (3–32 chars).");
                 return;
             }
     
@@ -62,5 +73,7 @@
             }
         });
     </script>
+
+
 </body>
 </html>

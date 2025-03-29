@@ -25,6 +25,15 @@ class Privilege(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
 
+class Feedback(db.Model):
+    __tablename__ = 'feedback'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    submitted_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    user = db.relationship('User', backref='feedbacks')
+
 
 @login_manager.user_loader
 def load_user(user_id):

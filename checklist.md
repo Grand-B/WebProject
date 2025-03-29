@@ -3,12 +3,12 @@
 3. Test registered function - Checked
 4. Check newly registered users privileges - Checked
 5. Test feedback field - Checked
-6. Check if feedback field store data - need implementation
+6. Check if feedback field store data - Checked
 7. Check if users table stored data - Checked
 8. Check if privileges table is set up correctly - Checked
-9. Test if login password require certain length/symbols - need full implementation
-10. Check if weak password demonstrate warning message - need implementation
-11. Check if register password require certain length/symbols - Checked - include "!" as well
+9. Test if login password require certain length/symbols - Checked
+10. Check if weak password demonstrate warning message - Checked
+11. Check if register password require certain length/symbols - Checked
 12. Check if weak register password demonstrate warning message - Need implementation, show which symbol is allowed
 
 Security Testing:
