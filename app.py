@@ -23,11 +23,11 @@ limiter = Limiter(
 )
 
 #Input authentication
-def is_valid_input(value):
+def validInput(value):
     return re.fullmatch(r"[a-zA-Z0-9_@$!.-]{3,32}", value)
 
 #Password strength check
-def is_strong_password(password):
+def strongPass(password):
     return (
         len(password) >= 8 and
         re.search("[a-z]", password) and
@@ -49,11 +49,11 @@ def register():
         username = request.form["username"]
         password = request.form["password"]
 
-        if not is_valid_input(username) or not is_valid_input(password):
+        if not validInput(username) or not validInput(password):
             flash("Invalid characters in username or password.", "danger")
             return redirect(url_for("register"))
 
-        if not is_strong_password(password):
+        if not strongPass(password):
             flash("Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character (! $ @ _ .)", "danger")
             return redirect(url_for("register"))
 
@@ -84,12 +84,12 @@ def register():
 #login function itself
 @app.route("/login", methods=["POST"])
 #rate limiting the amount of times the user can login
-@limiter.limit("50 per minute")
+@limiter.limit("20 per minute")
 def login():
     username = request.form["username"]
     password = request.form["password"]
 
-    if not is_valid_input(username) or not is_valid_input(password):
+    if not validInput(username) or not validInput(password):
         flash("Invalid characters in username or password.", "danger")
         return redirect(url_for("home"))
 
@@ -129,7 +129,7 @@ def change_password():
         current = request.form["currentPassword"]
         new = request.form["newPassword"]
 
-        if not is_valid_input(current) or not is_valid_input(new):
+        if not validInput(current) or not validInput(new):
             flash("Invalid characters in password, try again.", "danger")
             return redirect(url_for("change_password"))
 
@@ -137,7 +137,7 @@ def change_password():
             flash("Current password incorrect", "danger")
             return redirect(url_for("change_password"))
 
-        if not is_strong_password(new):
+        if not strongPass(new):
             flash("New password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character (! $ @ _ .)", "danger")
             return redirect(url_for("change_password"))
 

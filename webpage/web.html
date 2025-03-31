@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
 
 </head>
-<!-- body content goes here-->
 <body>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -56,11 +55,16 @@
             const password = document.querySelector('#password').value;
     
             //Regex patterns
-            const safePattern = /^[a-zA-Z0-9_@$!.-]{3,32}$/;
+            const safePattern = /^[a-z A-Z 0-9 _@$!.]{3,32}$/;
             
+            if (!safePattern.test(username)) {
+                    e.preventDefault();
+                    alert("Invalid characters in username. Use only letters, numbers, @ . $ ! and _ (3–32 chars).");
+                    return;
+                }
             if (!safePattern.test(password)) {
                 e.preventDefault();
-                alert("Invalid characters in username or password. Use only letters, numbers, @ . - $ ! and _ (8–32 chars).");
+                alert("Invalid characters in username or password. Use only letters, numbers, @ . $ ! and _ (8–32 chars).");
                 return;
             }
     

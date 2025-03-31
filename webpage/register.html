@@ -36,16 +36,16 @@
                 const password = document.querySelector('#password').value;
         
                 //Regex patterns
-                const safePattern = /^[a-zA-Z0-9_!$@.-]{3,32}$/;
+                const safePattern = /^[a-z A-Z 0-9 _!$@.]{3,32}$/;
         
                 if (!safePattern.test(username)) {
                     e.preventDefault();
-                    alert("Invalid characters in username. Use only letters, numbers, @ . - ! and _ (3–32 chars).");
+                    alert("Invalid characters in username. Use only letters, numbers, @ . $ ! and _ (3–32 chars).");
                     return;
                 }
                 if (!safePattern.test(password)) {
                     e.preventDefault();
-                    alert("Invalid characters in password. Use only letters, numbers, @ . - ! and _ (8–32 chars).");
+                    alert("Invalid characters in password. Use only letters, numbers, @ . $ ! and _ (8–32 chars).");
                     return;
                 }
         
