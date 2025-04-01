@@ -145,7 +145,7 @@ def change_password():
         current_user.password = new_hashed
         db.session.commit()
         flash("Password updated successfully!", "success")
-        return redirect(url_for("change_password"))
+        return redirect(url_for("dashboard"))
 
     return render_template("changePassword.html")
 
